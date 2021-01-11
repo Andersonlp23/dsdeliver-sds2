@@ -26,7 +26,7 @@ public class OrderService {
 	@Autowired // Server para injentar as dependencias
 	private ProductRepository productRepository;
 
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = true) // Alteração no banco de dados
 	public List<OrderDTO> findAll() {
 		List<Order> list = repository.findOrdersWithProducts();
 		return list.stream().map(x -> new OrderDTO(x)).collect(Collectors.toList());
@@ -48,4 +48,15 @@ public class OrderService {
 		return new OrderDTO(order);
 
 	}
+
+	@Transactional
+	public OrderDTO setDelivered(Long id) {
+		// Alterando o status do pedido para "entregue"
+		Order order = repository.getOne(id);
+		order.setStatus(OrderStatus.DELIVERED);
+		order = repository.save(order);
+		return new OrderDTO(order);
+
+	}
+
 }
